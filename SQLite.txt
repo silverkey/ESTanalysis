@@ -1,0 +1,4 @@
+# CREATE THE DB
+sqlite3 OCTO_EST_1
+
+
