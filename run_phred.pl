@@ -4,7 +4,7 @@ use warnings;
 
 BEGIN {
   $ENV{BLASTDIR} = '/Users/Remo/Desktop/EST_ANALYSIS/blast-2.2.23/bin';
-	$ENV{PHRED_PARAMETER_FILE} = '/Users/Remo/Desktop/EST_ANALYSIS/PHRED_PHRAP/phred-dist-020425.c-acd/phredpar.dat';
+  $ENV{PHRED_PARAMETER_FILE} = '/Users/Remo/Desktop/EST_ANALYSIS/PHRED_PHRAP/phred-dist-020425.c-acd/phredpar.dat';
 }
 
 # SET UP THE VARIABLES CONTAINING THE NAMES OF THE FOLDERS AND THE LOCATIONS OF THE FILES
@@ -19,4 +19,3 @@ chdir($res_dir);
 # launch the analysis
 system("$phred -id $chromas_dir -sa SEQs.fa -qa SEQs.fa.qual -qr SEQs.fa.stat -pd $phds_dir -trim_alt \"\" -trim_out -log");
 
-#
