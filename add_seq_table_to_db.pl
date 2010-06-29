@@ -50,7 +50,7 @@ sub prepare_data {
   my $qual = Bio::SeqIO->new(-file => $QUAL,
                               -format => 'qual');
   while(my $seq = $qual->next_seq()) {
-		next unless exists $DATA->{$seq->id};
+    next unless exists $DATA->{$seq->id};
     $DATA->{$seq->id}->{qual} = join("\,",@{$seq->qual});
   }
 }
