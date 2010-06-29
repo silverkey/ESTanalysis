@@ -10,15 +10,14 @@ chdir($folder);
 open(IN,$file);
 
 while(my $row = <IN>) {
-#  next unless $row =~ /^\<Tr\>\<Td bgcolor\=\#.+\>(.+)\<\/Td\>\<Td bgcolor\=\#.+ align\=\"right\"\>(\d+\.\d+)\%\<\/Td\>\<Td bgcolor\=\#.+ align\=\"right\"\>(\d+\.\d+)\%\<\/Td\>$/;
   next unless $row =~ /^\<Tr\>\<Td.bgcolor\=\#.+\>(.+)\<\/Td\>\<Td bgcolor\=\#.+align\=\"right\"\>(\d+\.\d+)\%\<\/Td\>\<Td.bgcolor\=\#.+.align\=\"right\"\>(\d+\.\d+)\%\<\/Td\>$/;
   my $id = $1;
   my $coding = $2;
   my $noncoding = $3;
-	$id =~ s/ //g;
-	$coding =~ s/ //g;
-	$noncoding =~ s/ //g;
+  $id =~ s/ //g;
+  $coding =~ s/ //g;
+  $noncoding =~ s/ //g;
   my $found = '';
-	$found .= '<===' if $noncoding >= $noncoding_cutoff;
+  $found .= '<===' if $noncoding >= $noncoding_cutoff;
   print "$id\t$coding\t$noncoding\t$found\n";
 }
