@@ -18,3 +18,5 @@ chdir($res_dir);
 
 # launch the analysis
 system("$phred -id $chromas_dir -sa SEQs.fa -qa SEQs.fa.qual -qr SEQs.fa.stat -pd $phds_dir -trim_alt \"\" -trim_out -log");
+
+#
