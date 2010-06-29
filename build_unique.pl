@@ -8,14 +8,11 @@ use Bio::SeqIO;
 
 use Data::Dumper;
 
-my $DB = 'OCTO_EST_3'; # Name and path of the database
-my $FASTA = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/2_CROSS_MATCH/SEQs.fa.screen'; # Name and path of the fasta file
-my $QUAL =  '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/2_CROSS_MATCH/SEQs.fa.screen.qual'; # Name and path of the quality file
+my $DB = '/Volumes/PACKY/POLPO_EST/ALL_ESTs/OCTO_EST_2'; # Name and path of the database
+my $FASTA = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_2/SEQs.fa.screen.cap.singlets'; # Name and path of the fasta file
+my $QUAL =  '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_2/SEQs.fa.screen.qual'; # Name and path of the quality file
 my $CREATE_TABLE = 1; # Create the table (1) or only add the rows (0)?
-my $TABNAME = 'clone'; # Name of the table to populate
-my $RES_DIR = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/3_DB/';
-
-chdir($RES_DIR);
+my $TABNAME = 'singlet'; # Name of the table to populate
 
 my $DATA = {};
 
@@ -26,8 +23,6 @@ create_table() if $CREATE_TABLE;
 prepare_data();
 
 insert_data();
-
-write_seqio();
 
 sub create_table {
   $DBH->do(qq{
@@ -56,6 +51,7 @@ sub prepare_data {
 }
 
 sub insert_data {
+
   my $sth = $DBH->prepare_cached(qq{
     INSERT INTO $TABNAME
     (name,seq,qual,length)
@@ -68,34 +64,5 @@ sub insert_data {
     my $length = $DATA->{$name}->{length};
 
     $sth->execute($name,$seq,$qual,$length);
-  }
-}
-
-sub write_seqio {
-  my $seqio = Bio::SeqIO->new(-file => ">$TABNAME\.fa",
-                              -format => 'fasta');
-
-  my $seqioq = Bio::SeqIO->new(-file => ">$TABNAME\.qual",
-                               -format => 'qual');
-
-  my $sth = $DBH->prepare("SELECT * FROM $TABNAME");
-
-  $sth->execute;
-
-  while(my $res = $sth->fetchrow_hashref) {
-
-    my $id = $res->{id};
-    my $seq = $res->{seq};
-    my $qual = $res->{qual};
-    $qual =~ s/\,/ /g;
-
-    my $seqobj = Bio::Seq->new(-id => $id,
-                               -seq => $seq);
-
-    my $qualobj = Bio::Seq::PrimaryQual->new(-id => $id,
-                                             -qual => $qual);
-
-    $seqio->write_seq($seqobj);
-    $seqioq->write_seq($qualobj);
   }
 }

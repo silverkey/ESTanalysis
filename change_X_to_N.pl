@@ -3,8 +3,8 @@ use strict;
 use warnings;
 use Bio::SeqIO;
 
-my $folder = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_2/'; # name of the folder containing the fasta
-my $fasta = 'SEQs.fa.screen'; # name of the fasta to change
+my $folder = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_2/PORTRAIT'; # name of the folder containing the fasta
+my $fasta = 'singlets_for_portraits.fa'; # name of the fasta to change
 
 # go into the directory
 chdir($folder);

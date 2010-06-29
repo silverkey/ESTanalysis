@@ -19,12 +19,18 @@ chdir($seqtrim_dir);
 # update the database
 system("perl seqtrim.pl -u");
 
-# better order to run the analysis:
+# better order to run a complete analysis:
 # q => quality filter
 # n => N filter
 # v => vector filter
 # c => contamination filter
-system("perl seqtrim.pl -C -v -f $seqs_dir$fasta -q $seqs_dir$qual --saveTrimmed $seqs_dir$out --outputRaw $seqs_dir$out\.bin --arrange qnvc");
+# system("perl seqtrim.pl -C -v -f $seqs_dir$fasta -q $seqs_dir$qual --saveTrimmed $seqs_dir$out --outputRaw $seqs_dir$out\.bin --arrange qnvc");
+
+# to run a partial analysis after the cap3:
+# q => quality filter
+# n => N filter
+# c => contamination filter
+system("perl seqtrim.pl -C -v -f $seqs_dir$fasta -q $seqs_dir$qual --saveTrimmed $seqs_dir$out --outputRaw $seqs_dir$out\.bin --arrange qnc");
 
 chdir($seqs_dir);
 system("cp $out $out\.fa");
