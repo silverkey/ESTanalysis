@@ -12,8 +12,10 @@ my $DB = 'OCTO_EST_3'; # Name and path of the database
 my $FASTA = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/2_CROSS_MATCH/SEQs.fa.screen'; # Name and path of the fasta file
 my $QUAL =  '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/2_CROSS_MATCH/SEQs.fa.screen.qual'; # Name and path of the quality file
 my $CREATE_TABLE = 1; # Create the table (1) or only add the rows (0)?
-my $TABNAME = 'clone'; # Name of the table to populate
 my $RES_DIR = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/3_DB/';
+
+# THE TABLE WITH THE PHRED OUTPUT MUST TO BE CALLED clone !!!!
+my $TABNAME = 'clone'; # Name of the table to populate
 
 chdir($RES_DIR);
 
@@ -78,7 +80,7 @@ sub write_seqio {
   my $seqioq = Bio::SeqIO->new(-file => ">$TABNAME\.qual",
                                -format => 'qual');
 
-  my $sth = $DBH->prepare("SELECT * FROM $TABNAME");
+  my $sth = $DBH->prepare("SELECT * FROM $TABNAME WHERE length > 0");
 
   $sth->execute;
 
