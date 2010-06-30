@@ -8,14 +8,14 @@ use Bio::SeqIO;
 
 use Data::Dumper;
 
-my $DB = 'OCTO_EST_3'; # Name and path of the database
-my $FASTA = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/2_CROSS_MATCH/SEQs.fa.screen'; # Name and path of the fasta file
-my $QUAL =  '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/2_CROSS_MATCH/SEQs.fa.screen.qual'; # Name and path of the quality file
+my $DB = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/3_DB/OCTO_EST_3'; # Name and path of the database
+my $FASTA = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/5_SEQTRIM/unique.trimmed.fa'; # Name and path of the fasta file
+my $QUAL =  '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/5_SEQTRIM/unique.trimmed.fa.qual'; # Name and path of the quality file
 my $CREATE_TABLE = 1; # Create the table (1) or only add the rows (0)?
-my $RES_DIR = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/3_DB/';
+my $RES_DIR = '/Volumes/PACKY/POLPO_EST/ALL_ESTs_ANALYSIS/TEST_3/6_PORTRAIT/';
 
 # THE TABLE WITH THE PHRED OUTPUT MUST TO BE CALLED clone !!!!
-my $TABNAME = 'clone'; # Name of the table to populate
+my $TABNAME = 'unique_trimmed'; # Name of the table to populate
 
 chdir($RES_DIR);
 
@@ -38,6 +38,7 @@ sub create_table {
     name VARCHAR KEY,
     seq VARCHAR,
     qual VARCHAR,
+    desc VARCHAR,
     length INTEGER KEY)
   });
 }
@@ -48,6 +49,7 @@ sub prepare_data {
   while(my $seq = $fasta->next_seq()) {
     $DATA->{$seq->id}->{seq} = $seq->seq;
     $DATA->{$seq->id}->{length} = $seq->length;
+    $DATA->{$seq->id}->{desc} = $seq->desc;
   }
   my $qual = Bio::SeqIO->new(-file => $QUAL,
                               -format => 'qual');
@@ -60,16 +62,17 @@ sub prepare_data {
 sub insert_data {
   my $sth = $DBH->prepare_cached(qq{
     INSERT INTO $TABNAME
-    (name,seq,qual,length)
+    (name,seq,qual,desc,length)
     VALUES (?,?,?,?)
   });
 
   foreach my $name(keys %$DATA) {
     my $seq = $DATA->{$name}->{seq};
     my $qual = $DATA->{$name}->{qual};
+    my $desc = $DATA->{$name}->{desc};
     my $length = $DATA->{$name}->{length};
 
-    $sth->execute($name,$seq,$qual,$length);
+    $sth->execute($name,$seq,$qual,$desc,$length);
   }
 }
 
