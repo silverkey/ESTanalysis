@@ -59,7 +59,7 @@ sub write_contig_seq_on_fasta {
     my $string = $seq->seq;
     $string =~ s/[Xx]/N/g;
     $seq->seq($string);
-	  $UNIQUE_FA->write_seq($seq);
+    $UNIQUE_FA->write_seq($seq);
   }
 }
 
@@ -75,7 +75,7 @@ sub populate_table {
   my $IO = Bio::Assembly::IO->new(-file => $ACE,
                                   -format => 'ace');
 
-	my $sth = $DBH->prepare_cached(qq{
+  my $sth = $DBH->prepare_cached(qq{
     INSERT INTO $TABNAME
     (contig_id,clone_id)
     VALUES (?,?)
@@ -87,8 +87,8 @@ sub populate_table {
     # Alternative ways to have sequences from the ace
     # We do not use it because in any case we will have to parse the fasta
     # containing the singlets given that cap3 does not put singlets in the .ace
-  	# my $contig_seq = $contig->get_consensus_sequence->seq;
-  	# my $contig_qual = join(" ",@{$contig->get_consensus_quality->qual});
+    # my $contig_seq = $contig->get_consensus_sequence->seq;
+    # my $contig_qual = join(" ",@{$contig->get_consensus_quality->qual});
 
     foreach my $seq($contig->each_seq()) {
       my $seq_id = $seq->id;
