@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Bio::SeqIO;
+use Bio::Seq;
 
 BEGIN {
   $ENV{BLASTDIR} = '/Users/Remo/Desktop/EST_ANALYSIS/blast-2.2.23/bin'; 
@@ -31,8 +33,97 @@ system("perl seqtrim.pl -u");
 # q => quality filter
 # n => N filter
 # c => contamination filter
-system("perl seqtrim.pl -C -v -f $seqs_dir$fasta -q $seqs_dir$qual --saveTrimmed $out_dir$out --outputRaw $out_dir$out\.bin --arrange qnc");
+######system("perl seqtrim.pl -C -v -f $seqs_dir$fasta -q $seqs_dir$qual --saveTrimmed $out_dir$out --outputRaw $out_dir$out\.bin --arrange qnc");
 
 # Need a workaround to generate real fasta and quality file from the seqtrim output
 # The program infact generate a fake fasta and quality file with the id on one line and the seq on a single subsequent line
+
+chdir($out_dir);
+
+work_around($out);
+work_around_qual("$out\.qual");
+
+sub work_around {
+  my $file = shift;
+  my $io = Bio::SeqIO->new(-file => ">mod_$file",
+                           -format => 'fasta');
+  open(IN,$file);
+  my $id;
+  my $s;
+  my $desc;
+  my @desc;
+  my $seq;
+  my $first = 0;
+  while(my $row = <IN>) {
+    chomp($row);
+    if($row =~ /^\>/ && $first) {
+      $id =~ s/\>//;
+      $seq = Bio::Seq->new(-id => $id,
+                           -desc => $desc,
+                           -seq => $s);
+      $io->write_seq($seq);
+      undef($id);
+      undef($desc);
+      undef(@desc);
+      undef($s);
+      undef($seq);
+      ($id,@desc) = split(/ /,$row);
+      $desc = join(" ",@desc);
+    }
+		elsif($row =~ /^\>/) {
+      ($id,@desc) = split(/ /,$row);
+      $desc = join(" ",@desc);
+    }
+    elsif($row =~ /^\w+/) {
+      $s .= $row;
+      $first ++;
+    }
+  }
+  $id =~ s/\>//;
+  $seq = Bio::Seq->new(-id => $id,
+                       -desc => $desc,
+                       -seq => $s);
+  $io->write_seq($seq);
+}
+
+sub work_around_qual {
+  my $file = shift;
+  my $io = Bio::SeqIO->new(-file => ">mod_$file",
+                           -format => 'qual');
+  open(IN,$file);
+  my $id;
+  my $s;
+  my $desc;
+  my @desc;
+  my $seq;
+  my $first = 0;
+  while(my $row = <IN>) {
+    chomp($row);
+    if($row =~ /^\>/ && $first) {
+      $id =~ s/\>//;
+      $seq = Bio::Seq::PrimaryQual->new(-id => $id,
+                                        -qual => $s);
+      $io->write_seq($seq);
+      undef($id);
+      undef($desc);
+      undef(@desc);
+      undef($s);
+      undef($seq);
+      ($id,@desc) = split(/ /,$row);
+      $desc = join(" ",@desc);
+    }
+		elsif($row =~ /^\>/) {
+      ($id,@desc) = split(/ /,$row);
+      $desc = join(" ",@desc);
+    }
+    elsif($row =~ /^\w+/) {
+      $s .= $row;
+      $first ++;
+    }
+  }
+  $id =~ s/\>//;
+  $seq = Bio::Seq::PrimaryQual->new(-id => $id,
+                                    -qual => $s);
+  $io->write_seq($seq);
+}
 
