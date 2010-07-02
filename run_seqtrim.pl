@@ -33,7 +33,7 @@ system("perl seqtrim.pl -u");
 # q => quality filter
 # n => N filter
 # c => contamination filter
-######system("perl seqtrim.pl -C -v -f $seqs_dir$fasta -q $seqs_dir$qual --saveTrimmed $out_dir$out --outputRaw $out_dir$out\.bin --arrange qnc");
+system("perl seqtrim.pl -C -v -f $seqs_dir$fasta -q $seqs_dir$qual --saveTrimmed $out_dir$out --outputRaw $out_dir$out\.bin --arrange qnc");
 
 # Need a workaround to generate real fasta and quality file from the seqtrim output
 # The program infact generate a fake fasta and quality file with the id on one line and the seq on a single subsequent line
