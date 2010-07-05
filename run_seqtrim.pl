@@ -70,7 +70,7 @@ sub work_around {
       ($id,@desc) = split(/ /,$row);
       $desc = join(" ",@desc);
     }
-		elsif($row =~ /^\>/) {
+    elsif($row =~ /^\>/) {
       ($id,@desc) = split(/ /,$row);
       $desc = join(" ",@desc);
     }
@@ -112,7 +112,7 @@ sub work_around_qual {
       ($id,@desc) = split(/ /,$row);
       $desc = join(" ",@desc);
     }
-		elsif($row =~ /^\>/) {
+    elsif($row =~ /^\>/) {
       ($id,@desc) = split(/ /,$row);
       $desc = join(" ",@desc);
     }
