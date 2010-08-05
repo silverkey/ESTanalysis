@@ -75,7 +75,7 @@ sub parse_ipr {
     chomp($row);
     my($id,$bla,$iprid,$desc,$analysis,$program) = split(/\t/,$row);
     $href->{$id}->{$desc} ++;
-	}
+  }
   close(IN);
 }
 
